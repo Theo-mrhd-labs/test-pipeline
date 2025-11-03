@@ -22,6 +22,14 @@ pipeline {
                 '''
             }
         }
+        stage ('build project') {
+            steps {
+                echo "build project"
+                sh '''
+                    pnpm build
+                '''
+            }
+        }
         stage('Hello') {
             steps {
                 echo 'Hello World'
