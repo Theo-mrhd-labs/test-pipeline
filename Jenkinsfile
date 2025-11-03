@@ -30,6 +30,14 @@ pipeline {
                 '''
             }
         }
+        stage ('run tests') {
+            steps {
+                echo "run tests"
+                sh '''
+                    pnpm test
+                '''
+            }
+        }
         stage('Hello') {
             steps {
                 echo 'Hello World'
