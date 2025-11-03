@@ -5,11 +5,6 @@ pipeline {
         nodejs 'node'
     }
 
-    options {
-        timestamps()
-        ansiColor('xterm')
-    }
-
     stages {
         stage('checkout') {
             steps {
