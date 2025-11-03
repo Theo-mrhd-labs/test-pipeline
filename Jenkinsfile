@@ -7,7 +7,7 @@ pipeline {
 
     environment {
         REGISTRY = "ghcr.io"
-        REPO_OWNER = "Theo-mrhd-labs"
+        REPO_OWNER = "theo-mrhd-labs"
         REPO_NAME  = "test-pipeline"
         IMAGE = "${REGISTRY}/${REPO_OWNER}/${REPO_NAME}"
         VERSION = "build-${env.BUILD_NUMBER}"
