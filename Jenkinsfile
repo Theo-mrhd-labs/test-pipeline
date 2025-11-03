@@ -15,7 +15,11 @@ pipeline {
         stage('install dependencies') {
             steps {
                 echo "install dependencies"
-                sh "pnpm install"
+                sh '''
+                    corepack enable
+                    corepack prepare pnpm@latest --activate
+                    pnpm install
+                '''
             }
         }
         stage('Hello') {
