@@ -5,8 +5,13 @@ pipeline {
         nodejs 'node'
     }
 
+    options {
+        timestamps()
+        ansiColor('xterm')
+    }
+
     stages {
-        stage('scm') {
+        stage('checkout') {
             steps {
                 echo "checkout scm"
                 checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'github-token', url: 'https://github.com/Theo-mrhd-labs/test-pipeline']])
@@ -18,7 +23,7 @@ pipeline {
                 sh '''
                     corepack enable
                     corepack prepare pnpm@latest --activate
-                    pnpm install
+                    pnpm install --frozen-lockfile
                 '''
             }
         }
@@ -38,10 +43,13 @@ pipeline {
                 '''
             }
         }
-        stage('Hello') {
-            steps {
-                echo 'Hello World'
-            }
+    }
+    post {
+        success {
+            echo 'Pipeline terminé avec succès !'
+        }
+        failure {
+            echo 'Échec du pipeline — vérifie les logs.'
         }
     }
 }
