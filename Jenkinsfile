@@ -5,6 +5,14 @@ pipeline {
         nodejs 'node'
     }
 
+    environment {
+        REGISTRY = "ghcr.io"
+        REPO_OWNER = "Theo-mrhd-labs"
+        REPO_NAME  = "test-pipeline"
+        IMAGE = "${REGISTRY}/${REPO_OWNER}/${REPO_NAME}"
+        VERSION = "build-${env.BUILD_NUMBER}"
+    }
+
     stages {
         stage('checkout') {
             steps {
@@ -36,6 +44,25 @@ pipeline {
                 sh '''
                     pnpm test
                 '''
+            }
+        }
+        stage('Build Docker image') {
+            steps {
+                echo "Build Docker image"
+                sh 'docker build -t ${IMAGE}:${VERSION} .'
+            }
+        }
+        stage('Push Docker image to GHCR') {
+            steps {
+                echo "🚀 Push Docker image to GitHub Container Registry"
+                withCredentials([usernamePassword(credentialsId: 'ghcr-credentials', usernameVariable: 'GH_USER', passwordVariable: 'GH_TOKEN')]) {
+                    sh '''
+                        echo "${GH_TOKEN}" | docker login ghcr.io -u "${GH_USER}" --password-stdin
+                        docker push ${IMAGE}:${VERSION}
+                        docker tag ${IMAGE}:${VERSION} ${IMAGE}:latest
+                        docker push ${IMAGE}:latest
+                    '''
+                }
             }
         }
     }
