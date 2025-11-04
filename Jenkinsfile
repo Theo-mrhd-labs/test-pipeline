@@ -65,6 +65,19 @@ pipeline {
                 }
             }
         }
+        stage('Tag GitHub version') {
+    steps {
+        echo "🏷️ Tagging repository with version ${VERSION}"
+        withCredentials([usernamePassword(credentialsId: 'github-token', usernameVariable: 'GH_USER', passwordVariable: 'GH_TOKEN')]) {
+            sh """
+                git config user.name "${GH_USER}"
+                git config user.email "${GH_USER}@users.noreply.github.com"
+                git tag -a "v${VERSION}" -m "Build ${VERSION}"
+                git push https://${GH_USER}:${GH_TOKEN}@github.com/theo-mrhd-labs/test-pipeline.git --tags
+            """
+        }
+    }
+}
     }
     post {
         success {
